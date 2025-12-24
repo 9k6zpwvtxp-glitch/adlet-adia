@@ -4,53 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Адия 🤍</title>
-
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
-
   <style>
-    <style>
-/* Сердечки */
-.heart {
-  position: fixed;
-  width: 20px;
-  height: 20px;
-  background: red;
-  transform: rotate(45deg);
-  top: -20px;
-  z-index: 0;
-  pointer-events: none;
-  animation: fall 5s linear infinite;
-}
-
-.heart::before,
-.heart::after {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background: red;
-  border-radius: 50%;
-}
-
-.heart::before {
-  top: -10px; left: 0;
-}
-
-.heart::after {
-  left: 10px; top: 0;
-}
-
-@keyframes fall {
-  0% { transform: translateY(0) rotate(45deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
-}
-</style>
+    /* Общие стили сайта */
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
       background: #fff8f5;
       color: #2b2b2b;
       text-align: center;
+      overflow-x: hidden;
     }
 
     header {
@@ -131,21 +94,64 @@
 
     .heart {
       color: #e25555;
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      transform: rotate(45deg);
+      top: -20px;
+      z-index: 0;
+      pointer-events: none;
+      animation: fall 5s linear infinite;
     }
 
-    audio {
-      display: none;
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #e25555;
+      border-radius: 50%;
+    }
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { left: 10px; top: 0; }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* Календарь */
+    .calendar-container { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+    .month { background: #ffe4e1; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .month h2 { margin-top: 0; color: #ff69b4; }
+    .grid { display: grid; grid-template-columns: repeat(7, 50px); gap: 5px; margin-top: 10px; }
+    .day {
+      padding: 12px; border-radius: 8px; background: #fff0f5; cursor: pointer;
+      position: relative; opacity: 0; transform: translateY(20px);
+      transition: transform 0.3s, opacity 0.3s;
     }
+    .day.visible { opacity: 1; transform: translateY(0); }
+    .day:hover { transform: scale(1.15); }
+    .day.highlight { background: #ff69b4; color: white; font-weight: bold; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+    .tooltip {
+      display: none; position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
+      background: #ff69b4; color: white; padding: 6px 12px; border-radius: 6px;
+      white-space: nowrap; font-size: 0.9rem; z-index: 10;
+    }
+    .day:hover .tooltip { display: block; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+    .modal.show { display: flex; opacity: 1; }
+    .modal-content { background: white; padding: 20px; border-radius: 10px;
+                     max-width: 90%; max-height: 80%; overflow: auto;
+                     transform: scale(0.7); transition: transform 0.3s; }
+    .modal.show .modal-content { transform: scale(1); }
+    .close { position: absolute; top: 10px; right: 20px; cursor: pointer; font-size: 1.5rem; color: #ff1493; }
   </style>
 </head>
 <body>
@@ -185,188 +191,127 @@
 
   <section>
     <h2>Наши моменты</h2>
-
     <div class="gallery">
       <img src="photo1.jpg" alt="Мы вместе">
       <img src="photo2.jpg" alt="Наша любовь">
     </div>
   </section>
 
+  <section>
+    <h2>Календарь наших важных дат</h2>
+    <div class="calendar-container" id="calendar-container"></div>
+  </section>
+
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modal-content">
+      <span class="close" id="close">&times;</span>
+      <div id="media"></div>
+    </div>
+  </div>
+
   <footer>
     Навсегда твой 🤍
   </footer>
 
-  <script><script>
-// Генерация падающих сердечек
-function createHeart() {
-  const heart = document.createElement('div');
-  heart.classList.add('heart');
-  heart.style.left = Math.random() * window.innerWidth + 'px';
-  heart.style.animationDuration = 4 + Math.random() * 3 + 's'; // разная скорость
-  heart.style.width = heart.style.height = 15 + Math.random()*15 + 'px'; // разный размер
-  document.body.appendChild(heart);
-
-  setTimeout(() => {
-    heart.remove();
-  }, 7000); // удаляем после анимации
-}
-
-// Создаем новые сердца каждые 300мс
-setInterval(createHeart, 300);
-</script>
-    const startDate = new Date("2025-07-28T00:00:00");
-
-    function updateCounter() {
-      const now = new Date();
-      const diff = now - startDate;
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-
-      document.getElementById("counter").innerText =
-        `Мы вместе уже ${days} дней и ${hours} часов 🤍`;
-    }
-
-    setInterval(updateCounter, 1000);
-    updateCounter();
-
-    function playMusic() {
-      document.getElementById("music").play();
-    }
-  </script>
-
-</body><!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
-<title>Наш календарь</title>
-<style>
-body { font-family: Arial, sans-serif; background: #fff0f5; text-align: center; padding: 20px; }
-h1 { color: #ff1493; }
-.calendar-container { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
-.month { background: #ffe4e1; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-.month h2 { margin-top: 0; color: #ff69b4; }
-.grid { display: grid; grid-template-columns: repeat(7, 50px); gap: 5px; margin-top: 10px; }
-.day {
-  padding: 12px; border-radius: 8px; background: #fff0f5; cursor: pointer;
-  position: relative; opacity: 0; transform: translateY(20px);
-  transition: transform 0.3s, opacity 0.3s;
-}
-.day.visible { opacity: 1; transform: translateY(0); }
-.day:hover { transform: scale(1.15); }
-.day.highlight { background: #ff69b4; color: white; font-weight: bold; animation: pulse 1.5s infinite; }
-@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-.tooltip {
-  display: none; position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
-  background: #ff69b4; color: white; padding: 6px 12px; border-radius: 6px;
-  white-space: nowrap; font-size: 0.9rem; z-index: 10;
-}
-.day:hover .tooltip { display: block; }
-/* Модальное окно */
-.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.6); justify-content: center; align-items: center;
-        opacity: 0; transition: opacity 0.3s; }
-.modal.show { display: flex; opacity: 1; }
-.modal-content { background: white; padding: 20px; border-radius: 10px;
-                 max-width: 90%; max-height: 80%; overflow: auto;
-                 transform: scale(0.7); transition: transform 0.3s; }
-.modal.show .modal-content { transform: scale(1); }
-.close { position: absolute; top: 10px; right: 20px; cursor: pointer; font-size: 1.5rem; color: #ff1493; }
-</style>
-</head>
-<body>
-
-<h1>Наш календарь</h1>
-<p>Наведите на дату, чтобы увидеть событие. Кликните, чтобы открыть фото/видео ❤️</p>
-
-<div class="calendar-container" id="calendar-container"></div>
-
-<div class="modal" id="modal">
-  <div class="modal-content" id="modal-content">
-    <span class="close" id="close">&times;</span>
-    <div id="media"></div>
-  </div>
-</div>
-
 <script>
-// Ваши даты и медиа
-const events = {
-  "2025-06-07": { text: "День знакомства 🎉", media: "<img src='images/dating_day.jpg' width='200'>" },
-  "2025-06-21": { text: "Первое свидание 💑", media: "<img src='images/first_date.jpg' width='200'>" },
-  "2025-07-24": { text: "Первый поцелуй 💋", media: "<img src='images/first_kiss.jpg' width='200'>" },
-  "2025-07-28": { text: "Начали встречаться ❤️", media: "<img src='images/started_dating.jpg' width='200'>" },
-  "2025-08-01": { text: "Первое 'Я тебя ценю' 💌", media: "<img src='images/first_i_love_you.jpg' width='200'>" }
-};
+  // Музыка
+  function playMusic() { document.getElementById("music").play(); }
 
-// Месяцы
-const months = [
-  { name: "Июнь 2025", days: 30 },
-  { name: "Июль 2025", days: 31 },
-  { name: "Август 2025", days: 31 }
-];
-
-const calendarContainer = document.getElementById('calendar-container');
-const modal = document.getElementById('modal');
-const modalContent = document.getElementById('media');
-const closeBtn = document.getElementById('close');
-
-// Создание календаря
-months.forEach((month, mIndex) => {
-  const monthDiv = document.createElement('div');
-  monthDiv.classList.add('month');
-  const title = document.createElement('h2');
-  title.textContent = month.name;
-  monthDiv.appendChild(title);
-  
-  const grid = document.createElement('div');
-  grid.classList.add('grid');
-  
-  for(let i=1; i<=month.days; i++){
-    const dayDiv = document.createElement('div');
-    dayDiv.classList.add('day');
-    dayDiv.textContent = i;
-    
-    // Дата YYYY-MM-DD
-    let monthNum = (mIndex + 6).toString().padStart(2,'0'); // июнь = 06
-    const dayStr = i.toString().padStart(2,'0');
-    const dateStr = `2025-${monthNum}-${dayStr}`;
-    dayDiv.dataset.date = dateStr;
-    
-    if(events[dateStr]){
-      dayDiv.classList.add('highlight');
-      const tooltip = document.createElement('div');
-      tooltip.classList.add('tooltip');
-      tooltip.textContent = events[dateStr].text;
-      dayDiv.appendChild(tooltip);
-    }
-    
-    grid.appendChild(dayDiv);
+  // Счётчик дней
+  const startDate = new Date("2025-07-28T00:00:00");
+  function updateCounter() {
+    const now = new Date();
+    const diff = now - startDate;
+    const days = Math.floor(diff / (1000*60*60*24));
+    const hours = Math.floor((diff/(1000*60*60))%24);
+    document.getElementById("counter").innerText = `Мы вместе уже ${days} дней и ${hours} часов 🤍`;
   }
-  
-  monthDiv.appendChild(grid);
-  calendarContainer.appendChild(monthDiv);
-});
+  setInterval(updateCounter, 1000);
+  updateCounter();
 
-// Анимация появления дней
-const dayDivs = document.querySelectorAll('.day');
-dayDivs.forEach((day, index) => {
-  setTimeout(() => { day.classList.add('visible'); }, index * 50);
-});
+  // Падающие сердечки
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.style.left = Math.random() * window.innerWidth + 'px';
+    heart.style.animationDuration = 4 + Math.random()*3 + 's';
+    heart.style.width = heart.style.height = 15 + Math.random()*15 + 'px';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 7000);
+  }
+  setInterval(createHeart, 300);
 
-// Модальное окно
-dayDivs.forEach(day => {
-  day.addEventListener('click', () => {
-    if(day.classList.contains('highlight')){
-      const date = day.dataset.date;
-      modalContent.innerHTML = `<h3>${events[date].text}</h3>${events[date].media}`;
-      modal.classList.add('show');
+  // Даты календаря (используем твои пути к фото)
+  const events = {
+    "2025-06-07": { text: "День знакомства 🎉", media: "<img src='photo1.jpg' width='200'>" },
+    "2025-06-21": { text: "Первое свидание 💑", media: "<img src='photo2.jpg' width='200'>" },
+    "2025-07-24": { text: "Первый поцелуй 💋", media: "<img src='photo1.jpg' width='200'>" },
+    "2025-07-28": { text: "Начали встречаться ❤️", media: "<img src='photo2.jpg' width='200'>" },
+    "2025-08-01": { text: "Первое 'Я тебя ценю' 💌", media: "<img src='photo1.jpg' width='200'>" }
+  };
+
+  const months = [
+    { name: "Июнь 2025", days: 30 },
+    { name: "Июль 2025", days: 31 },
+    { name: "Август 2025", days: 31 }
+  ];
+
+  const calendarContainer = document.getElementById('calendar-container');
+  const modal = document.getElementById('modal');
+  const modalContent = document.getElementById('media');
+  const closeBtn = document.getElementById('close');
+
+  months.forEach((month, mIndex) => {
+    const monthDiv = document.createElement('div');
+    monthDiv.classList.add('month');
+    const title = document.createElement('h2');
+    title.textContent = month.name;
+    monthDiv.appendChild(title);
+
+    const grid = document.createElement('div');
+    grid.classList.add('grid');
+
+    for(let i=1; i<=month.days; i++){
+      const dayDiv = document.createElement('div');
+      dayDiv.classList.add('day');
+      dayDiv.textContent = i;
+
+      let monthNum = (mIndex+6).toString().padStart(2,'0');
+      const dayStr = i.toString().padStart(2,'0');
+      const dateStr = `2025-${monthNum}-${dayStr}`;
+      dayDiv.dataset.date = dateStr;
+
+      if(events[dateStr]){
+        dayDiv.classList.add('highlight');
+        const tooltip = document.createElement('div');
+        tooltip.classList.add('tooltip');
+        tooltip.textContent = events[dateStr].text;
+        dayDiv.appendChild(tooltip);
+      }
+
+      grid.appendChild(dayDiv);
     }
+
+    monthDiv.appendChild(grid);
+    calendarContainer.appendChild(monthDiv);
   });
-});
-closeBtn.onclick = () => modal.classList.remove('show');
-window.onclick = (e) => { if(e.target == modal) modal.classList.remove('show'); };
+
+  const dayDivs = document.querySelectorAll('.day');
+  dayDivs.forEach((day, index) => { setTimeout(()=>{ day.classList.add('visible'); }, index*50); });
+
+  dayDivs.forEach(day => {
+    day.addEventListener('click', () => {
+      if(day.classList.contains('highlight')){
+        const date = day.dataset.date;
+        modalContent.innerHTML = `<h3>${events[date].text}</h3>${events[date].media}`;
+        modal.classList.add('show');
+      }
+    });
+  });
+
+  closeBtn.onclick = () => modal.classList.remove('show');
+  window.onclick = (e) => { if(e.target==modal) modal.classList.remove('show'); };
 </script>
 
 </body>
-</html>
 </html>
