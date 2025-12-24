@@ -8,6 +8,43 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
 
   <style>
+    <style>
+/* Сердечки */
+.heart {
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background: red;
+  transform: rotate(45deg);
+  top: -20px;
+  z-index: 0;
+  pointer-events: none;
+  animation: fall 5s linear infinite;
+}
+
+.heart::before,
+.heart::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 50%;
+}
+
+.heart::before {
+  top: -10px; left: 0;
+}
+
+.heart::after {
+  left: 10px; top: 0;
+}
+
+@keyframes fall {
+  0% { transform: translateY(0) rotate(45deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
+}
+</style>
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
