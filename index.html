@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Адия 🤍</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
   <style>
-    /* Общие стили сайта */
     body {
       margin: 0;
       font-family: 'Montserrat', sans-serif;
@@ -16,87 +15,26 @@
       overflow-x: hidden;
     }
 
-    header {
-      padding: 100px 20px;
-      background: linear-gradient(180deg, #fde2e2, #fff8f5);
-      animation: fadeIn 2s ease;
-    }
+    header { padding: 100px 20px; background: linear-gradient(180deg, #fde2e2, #fff8f5); }
+    header h1 { font-family: 'Playfair Display', serif; font-size: 44px; margin-bottom: 10px; }
+    header p { font-size: 18px; opacity: 0.85; }
 
-    header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 44px;
-      margin-bottom: 10px;
-    }
+    section { padding: 60px 20px; max-width: 900px; margin: auto; }
+    .love-text { font-size: 20px; line-height: 1.7; }
+    .date { margin-top: 20px; font-style: italic; opacity: 0.7; }
+    .counter { margin-top: 30px; font-size: 22px; font-weight: 600; }
+    .music-btn { margin-top: 25px; padding: 12px 26px; border: none; border-radius: 30px; background: #e25555; color: white; font-size: 16px; cursor: pointer; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 40px; }
+    .gallery img { width: 100%; border-radius: 18px; box-shadow: 0 12px 30px rgba(0,0,0,0.12); transition: transform 0.4s ease; }
+    .gallery img:hover { transform: scale(1.03); }
+    footer { padding: 40px 20px; font-size: 14px; opacity: 0.6; }
 
-    header p {
-      font-size: 18px;
-      opacity: 0.85;
-    }
-
-    section {
-      padding: 60px 20px;
-      max-width: 900px;
-      margin: auto;
-      animation: fadeInUp 1.5s ease;
-    }
-
-    .love-text {
-      font-size: 20px;
-      line-height: 1.7;
-    }
-
-    .date {
-      margin-top: 20px;
-      font-style: italic;
-      opacity: 0.7;
-    }
-
-    .counter {
-      margin-top: 30px;
-      font-size: 22px;
-      font-weight: 600;
-    }
-
-    .music-btn {
-      margin-top: 25px;
-      padding: 12px 26px;
-      border: none;
-      border-radius: 30px;
-      background: #e25555;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-      margin-top: 40px;
-    }
-
-    .gallery img {
-      width: 100%;
-      border-radius: 18px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-      transition: transform 0.4s ease;
-    }
-
-    .gallery img:hover {
-      transform: scale(1.03);
-    }
-
-    footer {
-      padding: 40px 20px;
-      font-size: 14px;
-      opacity: 0.6;
-    }
-
+    /* Сердечки */
     .heart {
-      color: #e25555;
       position: fixed;
       width: 20px;
       height: 20px;
+      background: red;
       transform: rotate(45deg);
       top: -20px;
       z-index: 0;
@@ -104,59 +42,42 @@
       animation: fall 5s linear infinite;
     }
 
-    .heart::before,
-    .heart::after {
+    .heart::before, .heart::after {
       content: '';
       position: absolute;
       width: 20px;
       height: 20px;
-      background: #e25555;
+      background: red;
       border-radius: 50%;
     }
+
     .heart::before { top: -10px; left: 0; }
     .heart::after { left: 10px; top: 0; }
 
-    @keyframes fall {
-      0% { transform: translateY(0) rotate(45deg); opacity: 1; }
-      100% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
-    }
-
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fall { 0% { transform: translateY(0) rotate(45deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(45deg); opacity: 0; } }
 
     /* Календарь */
-    .calendar-container { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
+    .calendar-container { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
     .month { background: #ffe4e1; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     .month h2 { margin-top: 0; color: #ff69b4; }
     .grid { display: grid; grid-template-columns: repeat(7, 50px); gap: 5px; margin-top: 10px; }
-    .day {
-      padding: 12px; border-radius: 8px; background: #fff0f5; cursor: pointer;
-      position: relative; opacity: 0; transform: translateY(20px);
-      transition: transform 0.3s, opacity 0.3s;
-    }
+    .day { padding: 12px; border-radius: 8px; background: #fff0f5; cursor: pointer; position: relative; opacity: 0; transform: translateY(20px); transition: transform 0.3s, opacity 0.3s; }
     .day.visible { opacity: 1; transform: translateY(0); }
     .day:hover { transform: scale(1.15); }
     .day.highlight { background: #ff69b4; color: white; font-weight: bold; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-    .tooltip {
-      display: none; position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%);
-      background: #ff69b4; color: white; padding: 6px 12px; border-radius: 6px;
-      white-space: nowrap; font-size: 0.9rem; z-index: 10;
-    }
+    .tooltip { display: none; position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); background: #ff69b4; color: white; padding: 6px 12px; border-radius: 6px; font-size: 0.9rem; z-index: 10; }
     .day:hover .tooltip { display: block; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
     .modal.show { display: flex; opacity: 1; }
-    .modal-content { background: white; padding: 20px; border-radius: 10px;
-                     max-width: 90%; max-height: 80%; overflow: auto;
-                     transform: scale(0.7); transition: transform 0.3s; }
+    .modal-content { background: white; padding: 20px; border-radius: 10px; max-width: 90%; max-height: 80%; overflow: auto; transform: scale(0.7); transition: transform 0.3s; }
     .modal.show .modal-content { transform: scale(1); }
     .close { position: absolute; top: 10px; right: 20px; cursor: pointer; font-size: 1.5rem; color: #ff1493; }
   </style>
 </head>
 <body>
 
-  <!-- Музыка -->
   <audio id="music" loop>
     <source src="music.mp3" type="audio/mpeg">
   </audio>
@@ -177,16 +98,9 @@
       <br><br>
       Я люблю тебя <span class="heart">♥</span>
     </p>
-
-    <div class="date">
-      28 июля 2025 — день, когда всё началось
-    </div>
-
+    <div class="date">28 июля 2025 — день, когда всё началось</div>
     <div class="counter" id="counter"></div>
-
-    <button class="music-btn" onclick="playMusic()">
-      Включить нашу музыку 🎵
-    </button>
+    <button class="music-btn" onclick="playMusic()">Включить нашу музыку 🎵</button>
   </section>
 
   <section>
@@ -198,7 +112,7 @@
   </section>
 
   <section>
-    <h2>Календарь наших важных дат</h2>
+    <h2>Календарь наших дат</h2>
     <div class="calendar-container" id="calendar-container"></div>
   </section>
 
@@ -209,9 +123,7 @@
     </div>
   </div>
 
-  <footer>
-    Навсегда твой 🤍
-  </footer>
+  <footer>Навсегда твой 🤍</footer>
 
 <script>
   // Музыка
@@ -234,14 +146,15 @@
     const heart = document.createElement('div');
     heart.classList.add('heart');
     heart.style.left = Math.random() * window.innerWidth + 'px';
-    heart.style.animationDuration = 4 + Math.random()*3 + 's';
-    heart.style.width = heart.style.height = 15 + Math.random()*15 + 'px';
+    const size = 15 + Math.random()*15;
+    heart.style.width = heart.style.height = size + 'px';
+    heart.style.animationDuration = (4 + Math.random()*3) + 's';
     document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 7000);
+    setTimeout(()=>heart.remove(),7000);
   }
   setInterval(createHeart, 300);
 
-  // Даты календаря (используем твои пути к фото)
+  // Календарь с фото
   const events = {
     "2025-06-07": { text: "День знакомства 🎉", media: "<img src='photo1.jpg' width='200'>" },
     "2025-06-21": { text: "Первое свидание 💑", media: "<img src='photo2.jpg' width='200'>" },
@@ -264,28 +177,23 @@
   months.forEach((month, mIndex) => {
     const monthDiv = document.createElement('div');
     monthDiv.classList.add('month');
-    const title = document.createElement('h2');
-    title.textContent = month.name;
+    const title = document.createElement('h2'); title.textContent = month.name;
     monthDiv.appendChild(title);
 
-    const grid = document.createElement('div');
-    grid.classList.add('grid');
+    const grid = document.createElement('div'); grid.classList.add('grid');
 
-    for(let i=1; i<=month.days; i++){
-      const dayDiv = document.createElement('div');
-      dayDiv.classList.add('day');
-      dayDiv.textContent = i;
-
-      let monthNum = (mIndex+6).toString().padStart(2,'0');
-      const dayStr = i.toString().padStart(2,'0');
-      const dateStr = `2025-${monthNum}-${dayStr}`;
-      dayDiv.dataset.date = dateStr;
+    for(let i=1;i<=month.days;i++){
+      const dayDiv=document.createElement('div');
+      dayDiv.classList.add('day'); dayDiv.textContent=i;
+      let monthNum=(mIndex+6).toString().padStart(2,'0');
+      const dayStr=i.toString().padStart(2,'0');
+      const dateStr=`2025-${monthNum}-${dayStr}`;
+      dayDiv.dataset.date=dateStr;
 
       if(events[dateStr]){
         dayDiv.classList.add('highlight');
-        const tooltip = document.createElement('div');
-        tooltip.classList.add('tooltip');
-        tooltip.textContent = events[dateStr].text;
+        const tooltip=document.createElement('div');
+        tooltip.classList.add('tooltip'); tooltip.textContent=events[dateStr].text;
         dayDiv.appendChild(tooltip);
       }
 
@@ -296,21 +204,19 @@
     calendarContainer.appendChild(monthDiv);
   });
 
-  const dayDivs = document.querySelectorAll('.day');
-  dayDivs.forEach((day, index) => { setTimeout(()=>{ day.classList.add('visible'); }, index*50); });
-
-  dayDivs.forEach(day => {
-    day.addEventListener('click', () => {
+  const dayDivs=document.querySelectorAll('.day');
+  dayDivs.forEach((day,index)=>{ setTimeout(()=>{ day.classList.add('visible'); }, index*50); });
+  dayDivs.forEach(day=>{
+    day.addEventListener('click',()=>{
       if(day.classList.contains('highlight')){
-        const date = day.dataset.date;
-        modalContent.innerHTML = `<h3>${events[date].text}</h3>${events[date].media}`;
+        const date=day.dataset.date;
+        modalContent.innerHTML=`<h3>${events[date].text}</h3>${events[date].media}`;
         modal.classList.add('show');
       }
     });
   });
-
-  closeBtn.onclick = () => modal.classList.remove('show');
-  window.onclick = (e) => { if(e.target==modal) modal.classList.remove('show'); };
+  closeBtn.onclick=()=>modal.classList.remove('show');
+  window.onclick=(e)=>{if(e.target==modal) modal.classList.remove('show');};
 </script>
 
 </body>
